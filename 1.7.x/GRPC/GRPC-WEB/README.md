@@ -1,16 +1,18 @@
 # GRPC WEB
 
-Neste lab, criamos 4 imagens:
+Neste lab, criamos 5 imagens:
 
     - jarzamendia/grpc-web-common:grpc-web-lab
     - jarzamendia/grpc-web-client:grpc-web-lab
     - jarzamendia/grpc-web-server:grpc-web-lab
+    - jarzamendia/grpc-web-envoy:grpc-web-lab
     - jarzamendia/traefik:grpc-web-lab
 
-A grpc-web-common hospeda os pre-requisitos para o client e o server.
-O grpc-web-client é um cliente em NodeJS.
-O grpc-web-server é um servidor GRPC em NodeJS, hospedado com um script Pyton.
-O traefik é uma imagem com os certificados necessarios e arquivo de configuração embarcados.
+- A grpc-web-common hospeda os pre-requisitos para o client e o server.
+- O grpc-web-client é um cliente em NodeJS.
+- O grpc-web-server é um servidor GRPC em NodeJS, hospedado com um script Pyton.
+- O grpc-web-envoy é um proxy envoy, que fará o meio de campo entre o traefik e o GRPC Server.
+- O traefik é uma imagem com os certificados necessarios e arquivo de configuração embarcados.
 
 ## Urls
 
