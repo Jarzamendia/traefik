@@ -1,6 +1,8 @@
 # GRPC WEB
 
-Neste lab, criamos 5 imagens:
+Este laboratório tem por objetivo demonstrar como hospedar uma aplicação cliente/servidor com GRPC Web usando o Traefik. Durante os testes preliminares percebemos que na época, o Traefik não conseguia hospedar corretamente aplicações em GRPC Web. Para resolver isto, usamos um proxy Envoy entre o Traefik e o servidor GRPC.
+
+Criamos 5 imagens:
 
     - jarzamendia/grpc-web-common:grpc-web-lab
     - jarzamendia/grpc-web-client:grpc-web-lab
@@ -13,6 +15,8 @@ Neste lab, criamos 5 imagens:
 - O grpc-web-server é um servidor GRPC em NodeJS, hospedado com um script Pyton.
 - O grpc-web-envoy é um proxy envoy, que fará o meio de campo entre o traefik e o GRPC Server.
 - O traefik é uma imagem com os certificados necessarios e arquivo de configuração embarcados.
+
+
 
 ## Urls
 
