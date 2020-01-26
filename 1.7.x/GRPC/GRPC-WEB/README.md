@@ -34,8 +34,8 @@ Acesse http://client.local/echotest.html, tudo que você escrever deve ser repet
 
 O caminho será:
 
-User --> Traefik --> Client GRPC 
-                 --> Envoy --> GRPC Server
+    - User --> Traefik --> Client GRPC 
+    -                  --> Envoy --> GRPC Server
 
 ## Docker-Compose.yml
 
