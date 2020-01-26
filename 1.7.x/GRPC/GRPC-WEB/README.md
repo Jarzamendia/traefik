@@ -16,9 +16,9 @@ O traefik é uma imagem com os certificados necessarios e arquivo de configuraç
     - GRPC Client = client.local
     - Traefik = traefik.local
 
-Caso você tenha que alterar o endereço do GRPC Server, altera também o cliente....
-var echoService = new EchoServiceClient('http://frontend.local', null, null);
-(client\echo\commonjs-example\client.js:26)
+Caso você tenha que alterar o endereço do GRPC Server, altera também o cliente.... 
+    - var echoService = new EchoServiceClient('http://frontend.local', null, null);
+    - (client\echo\commonjs-example\client.js:26)
 
 Os endereços devem ser apontados para o servidor hospedando o Traefik.
 
