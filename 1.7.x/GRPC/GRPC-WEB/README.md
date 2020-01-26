@@ -1,6 +1,7 @@
 # GRPC WEB
 
 Neste lab, criamos 4 imagens:
+
     - jarzamendia/grpc-web-common:grpc-web-lab
     - jarzamendia/grpc-web-client:grpc-web-lab
     - jarzamendia/grpc-web-server:grpc-web-lab
@@ -12,11 +13,13 @@ O grpc-web-server é um servidor GRPC em NodeJS, hospedado com um script Pyton.
 O traefik é uma imagem com os certificados necessarios e arquivo de configuração embarcados.
 
 ## Urls
+
     - GRPC Server (Envoy) = frontend.local 
     - GRPC Client = client.local
     - Traefik = traefik.local
 
-Caso você tenha que alterar o endereço do GRPC Server, altera também o cliente.... 
+Caso você tenha que alterar o endereço do GRPC Server, altera também o cliente....
+
     - var echoService = new EchoServiceClient('http://frontend.local', null, null);
     - (client\echo\commonjs-example\client.js:26)
 
