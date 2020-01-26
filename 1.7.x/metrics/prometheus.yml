@@ -1,0 +1,124 @@
+version: "3.3"
+
+networks:
+  proxy_net:
+    external: true
+
+configs:
+  dockerd_config:
+    file: ./dockerd-exporter/Caddyfile
+  node_rules:
+    file: ./prometheus/rules/swarm_node.rules.yml
+  task_rules:
+    file: ./prometheus/rules/swarm_task.rules.yml
+
+services:
+
+  d0086-hom-grafana:
+    image: stefanprodan/swarmprom-grafana:5.3.4
+    networks:
+      - proxy_net
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
+    volumes:
+      - grafana:/var/lib/grafana
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        - traefik.frontend.entryPoints=http
+        - traefik.backend=d0086-hom-grafana
+        - traefik.frontend.rule=Host:grafana.ms.gov.br
+        - traefik.port=3000
+        - traefik.docker.network=proxy_net
+
+  d0086-hom-alertmanager:
+    image: stefanprodan/swarmprom-alertmanager:v0.14.0
+    networks:
+      - proxy_net
+    environment:
+      - SLACK_URL=${SLACK_URL:-https://hooks.slack.com/services/TOKEN}
+      - SLACK_CHANNEL=${SLACK_CHANNEL:-general}
+      - SLACK_USER=${SLACK_USER:-alertmanager}
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    volumes:
+      - alertmanager:/alertmanager
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+      labels:
+        - traefik.frontend.entryPoints=http
+        - traefik.backend=d0086-hom-alertmanager
+        - traefik.frontend.rule=Host:alertmanager.${DOMAIN}
+        - traefik.port=9093
+        - traefik.docker.network=proxy_net
+
+  d0086-hom-unsee:
+    image: cloudflare/unsee:v0.8.0
+    networks:
+      - proxy_net
+    environment:
+      - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.frontend.entryPoints=http
+        - traefik.backend=d0086-hom-unsee
+        - traefik.frontend.rule=Host:unsee.ms.gov.br
+        - traefik.port=8080
+        - traefik.docker.network=proxy_net
+
+  d0086-hom-prometheus:
+    image: stefanprodan/swarmprom-prometheus:v2.5.0
+    networks:
+      - proxy_net
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=24h'
+    volumes:
+      - prometheus:/prometheus
+    configs:
+      - source: node_rules
+        target: /etc/prometheus/swarm_node.rules.yml
+      - source: task_rules
+        target: /etc/prometheus/swarm_task.rules.yml
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 128M
+      labels:
+        - traefik.frontend.entryPoints=http
+        - traefik.backend=d0086-hom-prometheus
+        - traefik.frontend.rule=Host:prometheus.ms.gov.br
+        - traefik.port=9090
+        - traefik.docker.network=proxy_net
