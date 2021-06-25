@@ -10,6 +10,8 @@ services:
        - "--providers.docker.swarmmode=true"
        - "--providers.docker.exposedbydefault=false"
        - "--entrypoints.web.address=:80"
+       - "--accesslog=true"
+
     ports:
        - target: 80
          published: 80
